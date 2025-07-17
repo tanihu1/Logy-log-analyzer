@@ -3,7 +3,7 @@ class ConfigParser:
     def __init__(self):
         pass
 
-    def parse_config_str(self, input_config) -> list:
+    def parse_config_line(self, input_config) -> list:
         return []
 
     def parse_config_file(self, file_path) -> list:
