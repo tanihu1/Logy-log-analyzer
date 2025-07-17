@@ -1,4 +1,4 @@
-from ConfigParser import ConfigParser, ConfigError
+from ConfigParser import ConfigParser, ConfigError, Event
 import unittest
 
 VALID_CONFIG_LINE = "TELEMETRY --count --pattern ^Iteration time:\\s\\d+\\.\\d+\\ssec$"
@@ -9,10 +9,9 @@ class TestBasicExecution(unittest.TestCase):
         parser = ConfigParser()
         result = parser.parse_config_line(VALID_CONFIG_LINE)
 
-        self.assertEqual(len(result),1,"Config parser detected incorrect amount of events!")
-        self.assertEqual(result[0].type, "TELEMETRY", "Config parser detected incorrect type of event!")
-        self.assertTrue(result[0].count, "Config parser detected wrong 'count' flag!")
-        self.assertEqual(result[0].type, "^Iteration time:\\s\\d+\\.\\d+\\ssec$", "Config parser detected incorrect regex!")
+        self.assertEqual(result.type, "TELEMETRY", "Config parser detected incorrect type of event!")
+        self.assertTrue(result.count, "Config parser detected wrong 'count' flag!")
+        self.assertEqual(result.pattern, "^Iteration time:\\s\\d+\\.\\d+\\ssec$", "Config parser detected incorrect regex!")
 
     def test_detectes_invalid_flag(self):
         parser = ConfigParser()
