@@ -13,6 +13,7 @@ class ConfigParser:
         pass
 
     # Gets line pre-stripped
+    #FIXME This function is too big
     def parse_config_line(self, line: str) -> Event:
         tokens = line.split()
 
