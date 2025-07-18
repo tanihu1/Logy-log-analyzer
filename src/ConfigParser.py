@@ -1,6 +1,7 @@
 import re
 
 
+# A basic Event data structure representing a single event from the events file
 class Event:
     def __init__(
         self, type: str, count: bool = False, level: str = "", pattern: str = ""
@@ -11,6 +12,7 @@ class Event:
         self.pattern = pattern
 
 
+# The config parser is responsible for creating Event objects out of events file
 class ConfigParser:
 
     def __init__(self):
@@ -32,6 +34,7 @@ class ConfigParser:
         for token in tokens:
             if token == "--level":
                 idx = tokens.index(token)
+                # Flag must be followed with an arg
                 try:
                     level = tokens[idx + 1]
                 except IndexError:
@@ -52,10 +55,12 @@ class ConfigParser:
             if token == "--pattern":
                 idx = tokens.index(token) + 1
                 regex_tokens = []
+                # Pick regex tokens until a flag is encountered
                 while idx < len(tokens) and not tokens[idx].startswith("--"):
                     regex_tokens.append(tokens[idx])
                     idx += 1
                 pattern = " ".join(regex_tokens)
+                # Regex must compile
                 try:
                     re.compile(pattern)
                 except:
@@ -65,7 +70,7 @@ class ConfigParser:
 
         return pattern
 
-    # Gets line pre-stripped
+    # Gets line pre-stripped. Parses a single event file line
     def parse_config_line(self, line: str) -> Event:
         tokens = line.split()
 
@@ -86,6 +91,7 @@ class ConfigParser:
 
         return Event(event_name, count, level, pattern)
 
+    # Initiates the parsing of an entire events file
     def parse_config_file(self, file_path) -> list:
         config_lines = []
         result = []
@@ -99,6 +105,7 @@ class ConfigParser:
                     config_lines.append(line)
         except FileNotFoundError as e:
             raise e
+
         for line in config_lines:
             if not line:
                 continue
@@ -111,6 +118,7 @@ class ConfigParser:
         return result
 
 
+# A custom error for expressing a problem with the events file
 class ConfigError(Exception):
     FLAG_ERROR = 1
     MISSING_FLAG_PARAM = 2

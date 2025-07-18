@@ -1,14 +1,15 @@
 from src.ConfigParser import ConfigError
 
 
+# Simple class for text formatting
 class Printer:
-    def __init__(self) -> None:
-        pass
 
+    # Scan results are printed one after the other
     def print_results(self, strings: list):
         for string in strings:
             print(string)
 
+    # Formatting for an error in events file (Based on actual error)
     def print_config_error(self, error: ConfigError):
         match error.error_type:
             case ConfigError.FLAG_ERROR:
@@ -55,6 +56,7 @@ class Printer:
         print("Oops! Log directory path provided doesn't seem to be a directory")
         print("Please double-check directory location and try again")
 
+    # Invalid timestamp format (Only ISO accepted)
     def print_invalid_timestamp_arg(self, is_from: bool):
         if is_from:
             print("Invalid --from timestamp!")
@@ -63,6 +65,7 @@ class Printer:
             print("Invalid --to timestamp!")
             print("Please make sure timestamp is in ISO format and try again")
 
+    # Logs must follow a certein convention
     def print_log_file_error(self):
         print("Oops! A log file seems to have unformmated lines!")
         print("Please make sure log lines follow:")

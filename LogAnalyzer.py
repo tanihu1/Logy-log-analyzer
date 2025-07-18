@@ -7,6 +7,7 @@ from datetime import datetime
 printer = Printer()
 
 
+# Define arguments
 def set_arguments():
     parser = argparse.ArgumentParser(
         description="Logy - A log analyzer FOR the people, BY the people!"
@@ -44,6 +45,7 @@ def set_arguments():
     return parser.parse_args()
 
 
+# Parse events file using the `ConfigParser`
 def parse_config(config_path) -> list:
     parser = ConfigParser()
     try:
@@ -60,6 +62,7 @@ def parse_config(config_path) -> list:
         exit()
 
 
+# Initiates log scan according to events
 def start_scan(args, events) -> list:
     start_time = None
     end_time = None
@@ -79,6 +82,7 @@ def start_scan(args, events) -> list:
 
     # Initialize scanner
     scanner = Scanner(events, start_time, end_time)
+    # This part is prone to many errors - extensive testing
     try:
         return scanner.scan_log_directory(args.log_dir)
     except FileNotFoundError:

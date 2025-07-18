@@ -6,6 +6,7 @@ import os
 import gzip
 
 
+# A data structure to represent a single line in a log file
 class LogLine:
     def __init__(self, line: str) -> None:
         tokens = line.split()
@@ -21,7 +22,9 @@ class LogLine:
         return self.timestamp + " " + self.level + " " + self.type + " " + self.content
 
 
+# The scanner is the main proccesor of the log files
 class Scanner:
+
     # Scanner initially wants to map log lines to events
     def __init__(
         self,
@@ -32,6 +35,8 @@ class Scanner:
         self.events = events
         self.start_time = start_time
         self.end_time = end_time
+
+        # Initialize empty dict to store matching LogLines
         event_idx = 0
         self.event_results = {}
         for event in events:
@@ -64,6 +69,7 @@ class Scanner:
 
         return indices
 
+    # If a timestamp filter is set, this function will apply it
     def _check_line_timestamp(self, line: LogLine) -> bool:
         try:
             line_time = datetime.fromisoformat(line.timestamp)
@@ -80,6 +86,7 @@ class Scanner:
         except ValueError:
             return False
 
+    # Process a single line from the log file
     def _scan_log_line(self, line: str):
         parsed_line = LogLine(line)
         event_indices = self._find_event_matchs(parsed_line)
@@ -114,10 +121,11 @@ class Scanner:
 
         return result
 
-    # Intializes scan
+    # Intializes scan for a log file
     def _scan_log_file(self, file_path: str) -> list:
         log_lines = []
         try:
+            # If log is compressed, use gzip
             if file_path.endswith(".gz"):
                 with gzip.open(file_path, "rt") as f:
                     log_lines = f.readlines()
@@ -131,6 +139,7 @@ class Scanner:
             line = line.strip()
             self._scan_log_line(line)
 
+        # Final processed data
         return self._create_printable_result()
 
     def scan_log_directory(self, dir_path: str) -> list:
@@ -142,7 +151,6 @@ class Scanner:
         if not os.path.isdir(dir_path):
             raise NotADirectoryError(f"Not a directory: {dir_path}")
 
-        files_found = False
         for filename in os.listdir(dir_path):
             file_path = os.path.join(dir_path, filename)
             if os.path.isfile(file_path):

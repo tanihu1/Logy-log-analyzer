@@ -30,6 +30,20 @@ To run the unit tests:
 python -m unittest discover -s tests -v
 ```
 
+## Events file
+
+Logy filters logs based on events provided in a text file.
+
+Events follow the following convention:
+
+```
+EVENT_TYPE [--count] [--level LEVEL] [--pattern REGEX]
+```
+
+Where except for the type, all flags are optional.
+
+Comments are supported and should start with `#`
+
 ## Solution implementation
 
 ![Project Diagram](proj_diagram.png)
