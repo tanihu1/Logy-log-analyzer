@@ -6,13 +6,43 @@ from datetime import datetime
 
 printer = Printer()
 
+
 def set_arguments():
-    parser = argparse.ArgumentParser(description="Logy - A log analyzer FOR the people, BY the people!")
-    parser.add_argument('-l','--log-dir',type=str,required=True,help='Path to directory containing logs')
-    parser.add_argument('-e','--events-file',type=str,required=True,help='Path to configuration file')
-    parser.add_argument('-f','--from',dest='start_time',type=str,required=False,help='Filter logs based on start timestamp')
-    parser.add_argument('-t','--to',dest='end_time',type=str,required=False,help='Filter logs based on end timestamp')
+    parser = argparse.ArgumentParser(
+        description="Logy - A log analyzer FOR the people, BY the people!"
+    )
+    parser.add_argument(
+        "-l",
+        "--log-dir",
+        type=str,
+        required=True,
+        help="Path to directory containing logs",
+    )
+    parser.add_argument(
+        "-e",
+        "--events-file",
+        type=str,
+        required=True,
+        help="Path to configuration file",
+    )
+    parser.add_argument(
+        "-f",
+        "--from",
+        dest="start_time",
+        type=str,
+        required=False,
+        help="Filter logs based on start timestamp",
+    )
+    parser.add_argument(
+        "-t",
+        "--to",
+        dest="end_time",
+        type=str,
+        required=False,
+        help="Filter logs based on end timestamp",
+    )
     return parser.parse_args()
+
 
 def parse_config(config_path) -> list:
     parser = ConfigParser()
@@ -29,7 +59,8 @@ def parse_config(config_path) -> list:
         print("Something went horribly wrong! Please try again")
         exit()
 
-def start_scan(args,events) -> list:
+
+def start_scan(args, events) -> list:
     start_time = None
     end_time = None
     # Test timestamps
@@ -45,9 +76,9 @@ def start_scan(args,events) -> list:
         except ValueError:
             printer.print_invalid_timestamp_arg(is_from=False)
             exit()
-    
+
     # Initialize scanner
-    scanner = Scanner(events,start_time,end_time)
+    scanner = Scanner(events, start_time, end_time)
     try:
         return scanner.scan_log_directory(args.log_dir)
     except FileNotFoundError:
@@ -64,15 +95,16 @@ def start_scan(args,events) -> list:
         exit()
 
 
-
 def print_results(results):
     printer.print_results(results)
+
 
 def main():
     args = set_arguments()
     events = parse_config(args.events_file)
-    scan_results = start_scan(args,events)
+    scan_results = start_scan(args, events)
     print_results(scan_results)
+
 
 if __name__ == "__main__":
     main()

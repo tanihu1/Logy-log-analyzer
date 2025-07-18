@@ -23,7 +23,7 @@ class TestBasicUsage(unittest.TestCase):
     def test_basic_event(self):
         scanner = Scanner(BASIC_EVENT)
         result = scanner.scan_log_directory(LOG_DIR)
-        result = [s for s in result if s] # Filter out some formatting
+        result = [s for s in result if s]  # Filter out some formatting
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )
@@ -33,7 +33,7 @@ class TestBasicUsage(unittest.TestCase):
     def test_count_event(self):
         scanner = Scanner(COUNT_EVENT)
         result = scanner.scan_log_directory(LOG_DIR)
-        result = [s for s in result if s] # Filter out some formatting
+        result = [s for s in result if s]  # Filter out some formatting
         self.assertEqual(
             len(result), 1, "Scanner detected incorrect amount of log lines!"
         )
@@ -46,7 +46,7 @@ class TestBasicUsage(unittest.TestCase):
     def test_level_event(self):
         scanner = Scanner(LEVEL_EVENT)
         result = scanner.scan_log_directory(LOG_DIR)
-        result = [s for s in result if s] # Filter out some formatting
+        result = [s for s in result if s]  # Filter out some formatting
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )
@@ -56,7 +56,7 @@ class TestBasicUsage(unittest.TestCase):
     def test_regex_event(self):
         scanner = Scanner(REGEX_EVENT)
         result = scanner.scan_log_directory(LOG_DIR)
-        result = [s for s in result if s] # Filter out some formatting
+        result = [s for s in result if s]  # Filter out some formatting
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )
@@ -69,7 +69,7 @@ class TestBasicUsage(unittest.TestCase):
             datetime.fromisoformat("2025-06-01T14:10:03"),
         )
         result = scanner.scan_log_directory(LOG_DIR)
-        result = [s for s in result if s] # Filter out some formatting
+        result = [s for s in result if s]  # Filter out some formatting
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )
