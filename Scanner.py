@@ -20,6 +20,7 @@ class LogLine:
 
 
 class Scanner:
+    # Scanner initially wants to map log lines to events
     def __init__(self, events: list) -> None:
         self.events = events
         event_idx = 0
@@ -28,6 +29,7 @@ class Scanner:
             self.event_results[0] = []
             event_idx += 1
 
+    # Finding all corresponding events for the log line
     def _find_event_matchs(self, log_line: LogLine) -> list:
         idx = 0
         indices = []
@@ -58,6 +60,7 @@ class Scanner:
         for idx in event_indices:
             self.event_results[idx].append(parsed_line)
 
+    # Assembles final array of print-ready strings
     def _create_printable_result(self) -> list:
         # Python 3.7 saves insertion order (nice)
         result = []
@@ -83,6 +86,7 @@ class Scanner:
 
         return result
 
+    # Intializes scan
     def scan_log_file(self, file_path: str) -> list:
         log_lines = []
         try:

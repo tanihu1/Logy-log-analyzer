@@ -77,12 +77,19 @@ class ConfigParser:
                 result.append(self.parse_config_line(line))
             except ConfigError as e:
                 raise e
-
+        if len(result) == 0:
+            raise ConfigError(
+                "No events in Config file",
+                ConfigError.NO_EVENTS,
+                -1,
+                ""
+                )
         return result
 
 class ConfigError(Exception):
     FLAG_ERROR = 1  # TODO refactor?
     MISSING_FLAG_PARAM = 2
+    NO_EVENTS = 3
 
     def __init__(self, message, error_type: int, line_num: int, line: str):
         super().__init__(message)
