@@ -10,20 +10,20 @@ LEVEL_EVENT = [Event("GNMI", level="ERROR")]
 REGEX_EVENT = [Event("TELEMETRY", pattern="^Iteration time:\\s\\d+\\.\\d+\\ssec$")]
 TIME_EVENT = [Event("GNMI")]
 
-LOG_FILE = "tests/test_logs.log"
+LOG_DIR = "tests/logs"
 
 
 class TestBasicUsage(unittest.TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
         super().__init__(methodName)
 
-        with open(LOG_FILE, "r") as log_file:
+        with open(LOG_DIR + "/test_logs.log", "r") as log_file:
             self.lines = [s.strip() for s in log_file.readlines()]
 
     def test_basic_event(self):
         scanner = Scanner(BASIC_EVENT)
-        # TODO error handling
-        result = scanner.scan_log_directory(LOG_FILE)
+        result = scanner.scan_log_directory(LOG_DIR)
+        result = [s for s in result if s] # Filter out some formatting
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )
@@ -32,19 +32,21 @@ class TestBasicUsage(unittest.TestCase):
 
     def test_count_event(self):
         scanner = Scanner(COUNT_EVENT)
-        result = scanner.scan_log_directory(LOG_FILE)
+        result = scanner.scan_log_directory(LOG_DIR)
+        result = [s for s in result if s] # Filter out some formatting
         self.assertEqual(
             len(result), 1, "Scanner detected incorrect amount of log lines!"
         )
         self.assertEqual(
             result[0],
-            "Event: TELEMETRY count - matches: 2 entries",
+            "\033[33mEvent\033[0m: TELEMETRY count - matches: 2 entries",
             "Scanner returned wrong result for count event",
         )
 
     def test_level_event(self):
         scanner = Scanner(LEVEL_EVENT)
-        result = scanner.scan_log_directory(LOG_FILE)
+        result = scanner.scan_log_directory(LOG_DIR)
+        result = [s for s in result if s] # Filter out some formatting
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )
@@ -53,7 +55,8 @@ class TestBasicUsage(unittest.TestCase):
 
     def test_regex_event(self):
         scanner = Scanner(REGEX_EVENT)
-        result = scanner.scan_log_directory(LOG_FILE)
+        result = scanner.scan_log_directory(LOG_DIR)
+        result = [s for s in result if s] # Filter out some formatting
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )
@@ -65,7 +68,8 @@ class TestBasicUsage(unittest.TestCase):
             datetime.fromisoformat("2025-06-01T14:05:22"),
             datetime.fromisoformat("2025-06-01T14:10:03"),
         )
-        result = scanner.scan_log_directory(LOG_FILE)
+        result = scanner.scan_log_directory(LOG_DIR)
+        result = [s for s in result if s] # Filter out some formatting
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )

@@ -29,7 +29,6 @@ def parse_config(config_path) -> list:
         print("Something went horribly wrong! Please try again")
         exit()
 
-#TODO scan *each file* in directory!!!!
 def start_scan(args,events) -> list:
     start_time = None
     end_time = None

@@ -1,5 +1,6 @@
 import re
 
+
 class Event:
     def __init__(
         self, type: str, count: bool = False, level: str = "", pattern: str = ""
@@ -9,64 +10,81 @@ class Event:
         self.level = level
         self.pattern = pattern
 
+
 class ConfigParser:
 
     def __init__(self):
         pass
 
+    def _extract_event_name(self, line: str) -> str:
+        return line.split()[0]
+
+    def _extract_event_count(self, line: str) -> bool:
+        tokens = line.split()
+        for token in tokens:
+            if token == "--count":
+                return True
+        return False
+
+    def _extract_event_level(self, line: str) -> str:
+        tokens = line.split()
+        level = ""
+        for token in tokens:
+            if token == "--level":
+                idx = tokens.index(token)
+                try:
+                    level = tokens[idx + 1]
+                except IndexError:
+                    raise ConfigError(
+                        "Bad config", ConfigError.MISSING_FLAG_PARAM, idx, line
+                    )
+                if level.startswith("--"):
+                    raise ConfigError(
+                        "Bad config", ConfigError.MISSING_FLAG_PARAM, idx, line
+                    )
+        return level
+
+    def _extract_event_pattern(self, line: str) -> str:
+        tokens = line.split()
+        pattern = ""
+
+        for token in tokens:
+            if token == "--pattern":
+                idx = tokens.index(token) + 1
+                regex_tokens = []
+                while idx < len(tokens) and not tokens[idx].startswith("--"):
+                    regex_tokens.append(tokens[idx])
+                    idx += 1
+                pattern = " ".join(regex_tokens)
+                try:
+                    re.compile(pattern)
+                except:
+                    raise ConfigError(
+                        "Bad regex in config", ConfigError.REGEX_ERROR, idx, line
+                    )
+
+        return pattern
+
     # Gets line pre-stripped
-    #FIXME This function is too big
     def parse_config_line(self, line: str) -> Event:
         tokens = line.split()
 
-        event_name = tokens[0]
-        count = False
-        level = ""
-        pattern = ""
+        # Check for invalid flags
+        for token in tokens:
+            if (
+                token.startswith("--")
+                and token != "--level"
+                and token != "--count"
+                and token != "--pattern"
+            ):
+                raise ConfigError("Bad config", ConfigError.FLAG_ERROR, 0, line)
 
-        # Line contains flags
-        if len(tokens) > 1:
-            i = 1
-            while i < len(tokens):
-                # --pattern is a special flag requiring more attention
-                if tokens[i] == "--pattern":
-                    regex_tokens = []
-                    i += 1
-                    while i < len(tokens) and not tokens[i].startswith("--"):
-                        regex_tokens.append(tokens[i])
-                        i+=1
-                    pattern = ' '.join(regex_tokens)
-                    try:
-                        re.compile(pattern)
-                    except:
-                        raise ConfigError(
-                            "Bad regex in config",
-                            ConfigError.REGEX_ERROR,
-                            i,
-                            line
-                        )
-                    continue
+        event_name = self._extract_event_name(line)
+        count = self._extract_event_count(line)
+        level = self._extract_event_level(line)
+        pattern = self._extract_event_pattern(line)
 
-                match tokens[i]:
-                    case "--count":
-                        count = True
-                        i += 1
-                    case "--level":
-                        try:
-                            level = tokens[i + 1]
-                            i += 2
-                        except IndexError:
-                            raise ConfigError(
-                                "Bad config",
-                                ConfigError.MISSING_FLAG_PARAM,
-                                i,
-                                line
-                            )
-                        if level.startswith("--"):
-                            raise ConfigError("Bad config",ConfigError.MISSING_FLAG_PARAM,i,line)
-                    case _:
-                        raise ConfigError("Bad config",ConfigError.FLAG_ERROR,i,line)
-        return Event(event_name,count, level, pattern)
+        return Event(event_name, count, level, pattern)
 
     def parse_config_file(self, file_path) -> list:
         config_lines = []
@@ -80,7 +98,7 @@ class ConfigParser:
                         continue
                     config_lines.append(line)
         except FileNotFoundError as e:
-            raise e  # TODO Check for this in main
+            raise e
         for line in config_lines:
             if not line:
                 continue
@@ -89,16 +107,12 @@ class ConfigParser:
             except ConfigError as e:
                 raise e
         if len(result) == 0:
-            raise ConfigError(
-                "No events in Config file",
-                ConfigError.NO_EVENTS,
-                -1,
-                ""
-                )
+            raise ConfigError("No events in Config file", ConfigError.NO_EVENTS, -1, "")
         return result
 
+
 class ConfigError(Exception):
-    FLAG_ERROR = 1  # TODO refactor?
+    FLAG_ERROR = 1
     MISSING_FLAG_PARAM = 2
     NO_EVENTS = 3
     REGEX_ERROR = 4
@@ -108,6 +122,3 @@ class ConfigError(Exception):
         self.error_type = error_type
         self.line_num = line_num
         self.line = line
-
-    def is_flag_err(self) -> bool:  # TODO are there more errors?
-        return self.error_type == self.FLAG_ERROR

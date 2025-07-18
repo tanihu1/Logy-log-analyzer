@@ -6,7 +6,6 @@ import os
 import gzip
 
 
-# TODO Are log lines necessarily correct?
 class LogLine:
     def __init__(self, line: str) -> None:
         tokens = line.split()
@@ -65,19 +64,19 @@ class Scanner:
 
         return indices
 
-    def _check_line_timestamp(self,line:LogLine) -> bool:
+    def _check_line_timestamp(self, line: LogLine) -> bool:
         line_time = datetime.fromisoformat(line.timestamp)
         if self.start_time and self.end_time:
             return line_time >= self.start_time and line_time <= self.end_time
-        
+
         if self.start_time:
             return line_time >= self.start_time
 
         if self.end_time:
             return line_time <= self.end_time
-        
+
         return True
-    
+
     def _scan_log_line(self, line: str):
         parsed_line = LogLine(line)
         event_indices = self._find_event_matchs(parsed_line)
@@ -89,7 +88,6 @@ class Scanner:
     def _create_printable_result(self) -> list:
         # Python 3.7 saves insertion order (nice)
         result = []
-        #TODO long lines
         for key, value in self.event_results.items():
             event: Event = self.events[key]
             if event.count:
@@ -106,20 +104,19 @@ class Scanner:
                     + f"{f'level [\033[32m{event.level}\033[0m]' if event.level else ''} "
                     + f"{f'pattern [\033[34m{event.pattern}\033[0m]' if event.pattern else ''} "
                     + f"{'\033[31mNo matching log lines\033[0m' if len(value) == 0 else '- matching log lines:'}"
-
                 )
                 for log_line in value:
                     result.append(str(log_line))
-            result.append("") # For better formatting
+            result.append("")  # For better formatting
 
         return result
 
     # Intializes scan
-    def _scan_log_file(self,file_path:str) -> list:
+    def _scan_log_file(self, file_path: str) -> list:
         log_lines = []
         try:
-            if file_path.endswith('.gz'):
-                with gzip.open(file_path, 'rt') as f:
+            if file_path.endswith(".gz"):
+                with gzip.open(file_path, "rt") as f:
                     log_lines = f.readlines()
             else:
                 with open(file_path, "r") as f:
@@ -136,7 +133,7 @@ class Scanner:
     def scan_log_directory(self, dir_path: str) -> list:
         scan_results = []
         for filename in os.listdir(dir_path):
-            file_path = os.path.join(dir_path,filename)
+            file_path = os.path.join(dir_path, filename)
             if os.path.isfile(file_path):
                 scan_results.extend(self._scan_log_file(file_path))
         return scan_results

@@ -20,4 +20,4 @@ class TestBasicExecution(unittest.TestCase):
             # If no exception is thrown, test failed
             self.fail("Config parser did not detect invalid type!")
         except ConfigError as e:
-            self.assertTrue(e.is_flag_err(), "Config parser raised wrong exception!")
+            self.assertTrue(e.error_type == ConfigError.FLAG_ERROR, "Config parser raised wrong exception!")
