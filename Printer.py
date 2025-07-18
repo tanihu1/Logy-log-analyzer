@@ -32,3 +32,11 @@ class Printer:
             case ConfigError.NO_EVENTS:
                 print("Oops! No events could be parsed from config file")
                 print("Please add at least one valid event and try again.")
+    
+    def print_no_config_file(self):
+        print("No readable events file could be detected at the defined path.")
+        print("Please double-check file location and try again")
+    
+    def print_no_log_file(self):
+        print("No readable logs file could be detected at the defined path.")
+        print("Please double-check file location and try again")
