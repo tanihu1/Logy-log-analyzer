@@ -67,13 +67,13 @@ class Scanner:
     def _check_line_timestamp(self,line:LogLine) -> bool:
         line_time = datetime.fromisoformat(line.timestamp)
         if self.start_time and self.end_time:
-            return line_time > self.start_time and line_time < self.end_time
+            return line_time >= self.start_time and line_time <= self.end_time
         
         if self.start_time:
-            return line_time > self.start_time
+            return line_time >= self.start_time
 
         if self.end_time:
-            return line_time < self.end_time
+            return line_time <= self.end_time
         
         return True
     
