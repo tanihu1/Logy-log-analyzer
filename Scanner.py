@@ -87,6 +87,7 @@ class Scanner:
     def _create_printable_result(self) -> list:
         # Python 3.7 saves insertion order (nice)
         result = []
+        #TODO long lines
         for key, value in self.event_results.items():
             event: Event = self.events[key]
             if event.count:
@@ -95,14 +96,15 @@ class Scanner:
                     f"\033[33mEvent\033[0m: {event.type} "
                     + f"{f'level [\033[32m{event.level}\033[0m] ' if event.level else ''}"
                     + f"{f'pattern [\033[34m{event.pattern}\033[0m] ' if event.pattern else ''}"
-                    + f"count - matches: {len(value)} entries"
+                    + f"count - matches: {'\033[31m0 entries\033[0m' if len(value) == 0 else f'{len(value)} entries'}"
                 )
             else:
                 result.append(
                     f"\033[33mEvent\033[0m: {event.type} "
                     + f"{f'level [\033[32m{event.level}\033[0m]' if event.level else ''} "
                     + f"{f'pattern [\033[34m{event.pattern}\033[0m]' if event.pattern else ''} "
-                    + f"- matching log lines:"
+                    + f"{'\033[31mNo matching log lines\033[0m' if len(value) == 0 else '- matching log lines:'}"
+
                 )
                 for log_line in value:
                     result.append(str(log_line))
