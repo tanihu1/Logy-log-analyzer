@@ -6,6 +6,14 @@ Supports `.log` files and `.log.gz` compressed files.
 
 ## Running
 
+**Example**:
+
+From inside the directory, run:
+
+```sh
+python LogAnalyzer.py -l logs -e event_configs/events_sample.txt
+```
+
 To see Logy's input options, simply run:
 
 ```sh
