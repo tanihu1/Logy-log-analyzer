@@ -15,7 +15,7 @@ class LogLine:
             self.type = tokens[2]
             self.content = " ".join(tokens[3:])
         except IndexError as e:
-            raise e
+            raise IndexError(f"Log line doesn't have enough fields: '{line}'") from e
 
     def __str__(self) -> str:
         return self.timestamp + " " + self.level + " " + self.type + " " + self.content
@@ -65,17 +65,20 @@ class Scanner:
         return indices
 
     def _check_line_timestamp(self, line: LogLine) -> bool:
-        line_time = datetime.fromisoformat(line.timestamp)
-        if self.start_time and self.end_time:
-            return line_time >= self.start_time and line_time <= self.end_time
+        try:
+            line_time = datetime.fromisoformat(line.timestamp)
+            if self.start_time and self.end_time:
+                return line_time >= self.start_time and line_time <= self.end_time
 
-        if self.start_time:
-            return line_time >= self.start_time
+            if self.start_time:
+                return line_time >= self.start_time
 
-        if self.end_time:
-            return line_time <= self.end_time
+            if self.end_time:
+                return line_time <= self.end_time
 
-        return True
+            return True
+        except ValueError:
+            return False
 
     def _scan_log_line(self, line: str):
         parsed_line = LogLine(line)
@@ -132,6 +135,14 @@ class Scanner:
 
     def scan_log_directory(self, dir_path: str) -> list:
         scan_results = []
+
+        if not os.path.exists(dir_path):
+            raise FileNotFoundError(f"Directory not found: {dir_path}")
+
+        if not os.path.isdir(dir_path):
+            raise NotADirectoryError(f"Not a directory: {dir_path}")
+
+        files_found = False
         for filename in os.listdir(dir_path):
             file_path = os.path.join(dir_path, filename)
             if os.path.isfile(file_path):
