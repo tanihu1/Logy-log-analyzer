@@ -13,7 +13,6 @@ class LogLine:
             self.level = tokens[1]
             self.type = tokens[2]
             self.content = " ".join(tokens[3:])
-        # TODO Take care of this
         except IndexError as e:
             raise e
 
@@ -35,7 +34,7 @@ class Scanner:
         event_idx = 0
         self.event_results = {}
         for event in events:
-            self.event_results[0] = []
+            self.event_results[event_idx] = []
             event_idx += 1
 
     # Finding all corresponding events for the log line
@@ -93,20 +92,21 @@ class Scanner:
             if event.count:
                 result.append(
                     # Python formatting shananigens
-                    f"Event: {event.type} "
-                    + f"{f'level [{event.level}] ' if event.level else ''}"
-                    + f"{f'pattern [{event.pattern}] ' if event.pattern else ''}"
+                    f"\033[33mEvent\033[0m: {event.type} "
+                    + f"{f'level [\033[32m{event.level}\033[0m] ' if event.level else ''}"
+                    + f"{f'pattern [\033[34m{event.pattern}\033[0m] ' if event.pattern else ''}"
                     + f"count - matches: {len(value)} entries"
                 )
             else:
                 result.append(
-                    f"Event: {event.type} "
-                    + f"{f'level [{event.level}]' if event.level else ''} "
-                    + f"{f'pattern [{event.pattern}]' if event.pattern else ''} "
+                    f"\033[33mEvent\033[0m: {event.type} "
+                    + f"{f'level [\033[32m{event.level}\033[0m]' if event.level else ''} "
+                    + f"{f'pattern [\033[34m{event.pattern}\033[0m]' if event.pattern else ''} "
                     + f"- matching log lines:"
                 )
                 for log_line in value:
                     result.append(str(log_line))
+            result.append("") # For better formatting
 
         return result
 

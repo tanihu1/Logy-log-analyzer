@@ -40,3 +40,17 @@ class Printer:
     def print_no_log_file(self):
         print("No readable logs file could be detected at the defined path.")
         print("Please double-check file location and try again")
+    
+    def print_invalid_timestamp_arg(self, is_from:bool):
+        if is_from:
+            print("Invalid --from timestamp!")
+            print("Please make sure timestamp is in ISO format and try again")
+        else:
+            print("Invalid --to timestamp!")
+            print("Please make sure timestamp is in ISO format and try again")
+    
+    def print_log_file_error(self):
+        print("Oops! A log file seems to have unformmated lines!")
+        print("Please make sure log lines follow:")
+        print("<TIMESTAMP> <LEVEL> <EVENT_TYPE> <MESSAGE>")
+

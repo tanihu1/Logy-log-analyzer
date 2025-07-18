@@ -1,14 +1,71 @@
-from ConfigParser import ConfigParser
+from ConfigParser import ConfigParser, ConfigError
+from Printer import Printer
+from Scanner import Scanner
 import argparse
+from datetime import datetime
 
-def main():
+printer = Printer()
+
+def set_arguments():
     parser = argparse.ArgumentParser(description="Logy - A log analyzer FOR the people, BY the people!")
     parser.add_argument('-l','--log-dir',type=str,required=True,help='Path to directory containing logs')
     parser.add_argument('-e','--events-file',type=str,required=True,help='Path to configuration file')
-    parser.add_argument('-f','--from',type=str,required=False,help='Filter logs based on start timestamp')
-    parser.add_argument('-t','--to',type=str,required=False,help='Filter logs based on end timestamp')
-    args = parser.parse_args()
-    print(args.log_dir)
+    parser.add_argument('-f','--from',dest='start_time',type=str,required=False,help='Filter logs based on start timestamp')
+    parser.add_argument('-t','--to',dest='end_time',type=str,required=False,help='Filter logs based on end timestamp')
+    return parser.parse_args()
+
+def parse_config(config_path) -> list:
+    parser = ConfigParser()
+    try:
+        events = parser.parse_config_file(config_path)
+        return events
+    except FileNotFoundError:
+        printer.print_no_config_file()
+        exit()
+    except ConfigError as e:
+        printer.print_config_error(e)
+        exit()
+    except Exception:
+        print("Something went horribly wrong! Please try again")
+        exit()
+
+#TODO scan *each file* in directory!!!!
+def start_scan(args,events) -> list:
+    start_time = None
+    end_time = None
+    # Test timestamps
+    if args.start_time:
+        try:
+            start_time = datetime.fromisoformat(args.start_time)
+        except ValueError:
+            printer.print_invalid_timestamp_arg(is_from=True)
+    if args.end_time:
+        try:
+            end_time = datetime.fromisoformat(args.end_time)
+        except ValueError:
+            printer.print_invalid_timestamp_arg(is_from=False)
+    
+    # Initialize scanner
+    scanner = Scanner(events,start_time,end_time)
+    try:
+        return scanner.scan_log_file(args.log_dir)
+    except FileNotFoundError:
+        printer.print_no_log_file()
+        exit()
+    except IndexError:
+        printer.print_log_file_error()
+        exit()
+
+
+
+def print_results(results):
+    printer.print_results(results)
+
+def main():
+    args = set_arguments()
+    events = parse_config(args.events_file)
+    scan_results = start_scan(args,events)
+    print_results(scan_results)
 
 if __name__ == "__main__":
     main()
