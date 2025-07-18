@@ -1,4 +1,4 @@
-from ConfigParser import ConfigParser, ConfigError, Event
+from src.ConfigParser import ConfigParser, ConfigError, Event
 import unittest
 
 VALID_CONFIG_LINE = "TELEMETRY --count --pattern ^Iteration time:\\s\\d+\\.\\d+\\ssec$"

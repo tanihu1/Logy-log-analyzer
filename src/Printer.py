@@ -1,4 +1,4 @@
-from ConfigParser import ConfigError
+from src.ConfigParser import ConfigError
 
 
 class Printer:

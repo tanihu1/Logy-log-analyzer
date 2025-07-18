@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from ConfigParser import Event
+from src.ConfigParser import Event
 import re
 import os
 import gzip

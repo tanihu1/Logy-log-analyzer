@@ -1,5 +1,5 @@
-from ConfigParser import Event
-from Scanner import Scanner
+from src.ConfigParser import Event
+from src.Scanner import Scanner
 from datetime import datetime
 import unittest
 import re

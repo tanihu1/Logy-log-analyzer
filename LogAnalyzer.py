@@ -1,6 +1,6 @@
-from ConfigParser import ConfigParser, ConfigError
-from Printer import Printer
-from Scanner import Scanner
+from src.ConfigParser import ConfigParser, ConfigError
+from src.Printer import Printer
+from src.Scanner import Scanner
 import argparse
 from datetime import datetime
 
