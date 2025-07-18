@@ -1,3 +1,5 @@
+from datetime import datetime
+from typing import Optional
 from ConfigParser import Event
 import re
 
@@ -14,15 +16,22 @@ class LogLine:
         # TODO Take care of this
         except IndexError as e:
             raise e
-        
+
     def __str__(self) -> str:
-        return self.timestamp + ' ' + self.level + ' ' + self.type + ' ' + self.content
+        return self.timestamp + " " + self.level + " " + self.type + " " + self.content
 
 
 class Scanner:
     # Scanner initially wants to map log lines to events
-    def __init__(self, events: list) -> None:
+    def __init__(
+        self,
+        events: list,
+        start_time: Optional[datetime] = None,
+        end_time: Optional[datetime] = None,
+    ) -> None:
         self.events = events
+        self.start_time = start_time
+        self.end_time = end_time
         event_idx = 0
         self.event_results = {}
         for event in events:
@@ -31,6 +40,8 @@ class Scanner:
 
     # Finding all corresponding events for the log line
     def _find_event_matchs(self, log_line: LogLine) -> list:
+        if not self._check_line_timestamp(log_line):
+            return []
         idx = 0
         indices = []
         for event in self.events:
@@ -53,6 +64,19 @@ class Scanner:
 
         return indices
 
+    def _check_line_timestamp(self,line:LogLine) -> bool:
+        line_time = datetime.fromisoformat(line.timestamp)
+        if self.start_time and self.end_time:
+            return line_time > self.start_time and line_time < self.end_time
+        
+        if self.start_time:
+            return line_time > self.start_time
+
+        if self.end_time:
+            return line_time < self.end_time
+        
+        return True
+    
     def _scan_log_line(self, line: str):
         parsed_line = LogLine(line)
         event_indices = self._find_event_matchs(parsed_line)
@@ -69,17 +93,17 @@ class Scanner:
             if event.count:
                 result.append(
                     # Python formatting shananigens
-                    f"Event: {event.type} "+
-                    f"{f'level [{event.level}] ' if event.level else ''}"+
-                    f"{f'pattern [{event.pattern}] ' if event.pattern else ''}"+
-                    f"count - matches: {len(value)} entries"
+                    f"Event: {event.type} "
+                    + f"{f'level [{event.level}] ' if event.level else ''}"
+                    + f"{f'pattern [{event.pattern}] ' if event.pattern else ''}"
+                    + f"count - matches: {len(value)} entries"
                 )
             else:
                 result.append(
-                    f"Event: {event.type} "+
-                    f"{f'level [{event.level}]' if event.level else ''} "+
-                    f"{f'pattern [{event.pattern}]' if event.pattern else ''} "+
-                    f"- matching log lines:"
+                    f"Event: {event.type} "
+                    + f"{f'level [{event.level}]' if event.level else ''} "
+                    + f"{f'pattern [{event.pattern}]' if event.pattern else ''} "
+                    + f"- matching log lines:"
                 )
                 for log_line in value:
                     result.append(str(log_line))
