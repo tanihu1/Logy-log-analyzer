@@ -76,3 +76,8 @@ GNMI --pattern ([A-Z]{3,5}?+) --level ERROR
 
 Please fix config file and try again.
 ```
+
+##### Time complexity considerations
+Since each event must be checked against each log line, most optimizations are made to ensure comparisons are cut short as soon as a condition is not met.
+
+Further more extreme time optimization could be acheived through the use of line condition caching. But such optimizations would show little to no results in modern computers and would hinder code readability. 
