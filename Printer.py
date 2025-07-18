@@ -29,6 +29,17 @@ class Printer:
                 print("-"*len(error.line))
                 print()
                 print("Please fix config file and try again.")
+            case ConfigError.REGEX_ERROR:
+                print(
+                    "Oops! It seems like the config file contains invalid regex!"
+                    )
+                print()
+                print("-"*len(error.line))
+                print(error.line)
+                print("-"*len(error.line))
+                print()
+                print("Please fix config file and try again.")
+
             case ConfigError.NO_EVENTS:
                 print("Oops! No events could be parsed from config file")
                 print("Please add at least one valid event and try again.")
@@ -52,5 +63,5 @@ class Printer:
     def print_log_file_error(self):
         print("Oops! A log file seems to have unformmated lines!")
         print("Please make sure log lines follow:")
-        print("<TIMESTAMP> <LEVEL> <EVENT_TYPE> <MESSAGE>")
+        print("<TIMESTAMP IN ISO FORMAT> <LEVEL> <EVENT_TYPE> <MESSAGE>")
 

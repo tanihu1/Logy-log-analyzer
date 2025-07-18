@@ -1,3 +1,5 @@
+import re
+
 class Event:
     def __init__(
         self, type: str, count: bool = False, level: str = "", pattern: str = ""
@@ -34,6 +36,15 @@ class ConfigParser:
                         regex_tokens.append(tokens[i])
                         i+=1
                     pattern = ' '.join(regex_tokens)
+                    try:
+                        re.compile(pattern)
+                    except:
+                        raise ConfigError(
+                            "Bad regex in config",
+                            ConfigError.REGEX_ERROR,
+                            i,
+                            line
+                        )
                     continue
 
                 match tokens[i]:
@@ -90,6 +101,7 @@ class ConfigError(Exception):
     FLAG_ERROR = 1  # TODO refactor?
     MISSING_FLAG_PARAM = 2
     NO_EVENTS = 3
+    REGEX_ERROR = 4
 
     def __init__(self, message, error_type: int, line_num: int, line: str):
         super().__init__(message)

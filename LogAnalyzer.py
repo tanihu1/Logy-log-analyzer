@@ -39,11 +39,13 @@ def start_scan(args,events) -> list:
             start_time = datetime.fromisoformat(args.start_time)
         except ValueError:
             printer.print_invalid_timestamp_arg(is_from=True)
+            exit()
     if args.end_time:
         try:
             end_time = datetime.fromisoformat(args.end_time)
         except ValueError:
             printer.print_invalid_timestamp_arg(is_from=False)
+            exit()
     
     # Initialize scanner
     scanner = Scanner(events,start_time,end_time)
@@ -53,6 +55,9 @@ def start_scan(args,events) -> list:
         printer.print_no_log_file()
         exit()
     except IndexError:
+        printer.print_log_file_error()
+        exit()
+    except ValueError:
         printer.print_log_file_error()
         exit()
 
