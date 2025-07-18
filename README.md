@@ -53,7 +53,7 @@ What resulted is a basic sketch of the project's architecture:
 
 The main file is `LogAnalyzer.py`. It's responsible for executing the main flow of the project.
 
-##### Program's flow
+#### Program's flow
 
 1. Arguments are parsed from the user
 2. `ConfigParser.py` parses the supplied events file to assemble an array of `Event` objects
@@ -61,7 +61,7 @@ The main file is `LogAnalyzer.py`. It's responsible for executing the main flow 
 4. `Scanner.py` filters logs based on provided events, and styles the data for CLI
 5. Styled data is passed to `Printer.py`, which handles all of the program's print statements
 
-##### Error handling
+#### Error handling
 
 The program performs extensive error checking, and uses the `Printer.py` to print detected errors in a user friendly way.
 
@@ -77,7 +77,7 @@ GNMI --pattern ([A-Z]{3,5}?+) --level ERROR
 Please fix config file and try again.
 ```
 
-##### Time complexity considerations
+#### Time complexity considerations
 Since each event must be checked against each log line, most optimizations are made to ensure comparisons are cut short as soon as a condition is not met.
 
 Further more extreme time optimization could be acheived through the use of line condition caching. But such optimizations would show little to no results in modern computers and would hinder code readability. 
