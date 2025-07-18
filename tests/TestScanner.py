@@ -23,7 +23,7 @@ class TestBasicUsage(unittest.TestCase):
     def test_basic_event(self):
         scanner = Scanner(BASIC_EVENT)
         # TODO error handling
-        result = scanner.scan_log_file(LOG_FILE)
+        result = scanner.scan_log_directory(LOG_FILE)
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )
@@ -32,7 +32,7 @@ class TestBasicUsage(unittest.TestCase):
 
     def test_count_event(self):
         scanner = Scanner(COUNT_EVENT)
-        result = scanner.scan_log_file(LOG_FILE)
+        result = scanner.scan_log_directory(LOG_FILE)
         self.assertEqual(
             len(result), 1, "Scanner detected incorrect amount of log lines!"
         )
@@ -44,7 +44,7 @@ class TestBasicUsage(unittest.TestCase):
 
     def test_level_event(self):
         scanner = Scanner(LEVEL_EVENT)
-        result = scanner.scan_log_file(LOG_FILE)
+        result = scanner.scan_log_directory(LOG_FILE)
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )
@@ -53,7 +53,7 @@ class TestBasicUsage(unittest.TestCase):
 
     def test_regex_event(self):
         scanner = Scanner(REGEX_EVENT)
-        result = scanner.scan_log_file(LOG_FILE)
+        result = scanner.scan_log_directory(LOG_FILE)
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )
@@ -65,7 +65,7 @@ class TestBasicUsage(unittest.TestCase):
             datetime.fromisoformat("2025-06-01T14:05:22"),
             datetime.fromisoformat("2025-06-01T14:10:03"),
         )
-        result = scanner.scan_log_file(LOG_FILE)
+        result = scanner.scan_log_directory(LOG_FILE)
         self.assertEqual(
             len(result), 3, "Scanner detected incorrect amount of log lines!"
         )

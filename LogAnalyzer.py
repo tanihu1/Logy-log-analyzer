@@ -50,9 +50,12 @@ def start_scan(args,events) -> list:
     # Initialize scanner
     scanner = Scanner(events,start_time,end_time)
     try:
-        return scanner.scan_log_file(args.log_dir)
+        return scanner.scan_log_directory(args.log_dir)
     except FileNotFoundError:
         printer.print_no_log_file()
+        exit()
+    except NotADirectoryError:
+        printer.print_not_dir_error()
         exit()
     except IndexError:
         printer.print_log_file_error()

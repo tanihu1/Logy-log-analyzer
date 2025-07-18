@@ -66,3 +66,6 @@ DEVICE --pattern ^backup process taking longer than expected$ --level WARNING
 
 # GNMI retry attempts
 GNMI --pattern ^retry attempt \d+/\d+ for endpoint detection$ --level WARNING
+
+# For some tests
+TEST

@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import Optional
 from ConfigParser import Event
 import re
+import os
+import gzip
 
 
 # TODO Are log lines necessarily correct?
@@ -113,11 +115,15 @@ class Scanner:
         return result
 
     # Intializes scan
-    def scan_log_file(self, file_path: str) -> list:
+    def _scan_log_file(self,file_path:str) -> list:
         log_lines = []
         try:
-            with open(file_path, "r") as f:
-                log_lines = f.readlines()
+            if file_path.endswith('.gz'):
+                with gzip.open(file_path, 'rt') as f:
+                    log_lines = f.readlines()
+            else:
+                with open(file_path, "r") as f:
+                    log_lines = f.readlines()
         except FileNotFoundError as e:
             raise e
 
@@ -126,3 +132,11 @@ class Scanner:
             self._scan_log_line(line)
 
         return self._create_printable_result()
+
+    def scan_log_directory(self, dir_path: str) -> list:
+        scan_results = []
+        for filename in os.listdir(dir_path):
+            file_path = os.path.join(dir_path,filename)
+            if os.path.isfile(file_path):
+                scan_results.extend(self._scan_log_file(file_path))
+        return scan_results

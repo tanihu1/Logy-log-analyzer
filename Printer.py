@@ -52,6 +52,10 @@ class Printer:
         print("No readable logs file could be detected at the defined path.")
         print("Please double-check file location and try again")
     
+    def print_not_dir_error(self):
+        print("Oops! Log directory path provided doesn't seem to be a directory")
+        print("Please double-check directory location and try again")
+    
     def print_invalid_timestamp_arg(self, is_from:bool):
         if is_from:
             print("Invalid --from timestamp!")
