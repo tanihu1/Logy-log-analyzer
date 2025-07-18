@@ -6,7 +6,7 @@ import re
 BASIC_EVENT = [Event("DEVICE")]
 COUNT_EVENT = [Event("TELEMETRY",count=True)]
 LEVEL_EVENT = [Event("GNMI",level="ERROR")]
-REGEX_EVENT = [Event("EXTRA",pattern="^Iteration time:\\s\\d+\\.\\d+\\ssec$")]
+REGEX_EVENT = [Event("TELEMETRY",pattern="^Iteration time:\\s\\d+\\.\\d+\\ssec$")]
 LOG_FILE = "tests/test_logs.log"
 
 class TestBasicUsage(unittest.TestCase):
@@ -14,7 +14,8 @@ class TestBasicUsage(unittest.TestCase):
         super().__init__(methodName)
 
         with open(LOG_FILE,'r') as log_file:
-            self.lines = log_file.readlines();
+            self.lines = [s.strip() for s in log_file.readlines()]
+
 
     def test_basic_event(self):
         scanner = Scanner(BASIC_EVENT)
@@ -33,12 +34,15 @@ class TestBasicUsage(unittest.TestCase):
     def test_level_event(self):
         scanner = Scanner(LEVEL_EVENT)
         result = scanner.scan_log_file(LOG_FILE)
-        self.assertEqual(len(result),2,"Scanner detected incorrect amount of log lines!");
+        self.assertEqual(len(result),3,"Scanner detected incorrect amount of log lines!");
         self.assertEqual(result[1],self.lines[3],"Scanner line output mismatch!")
         self.assertEqual(result[2],self.lines[7],"Scanner line output mismatch!")
     
     def test_regex_event(self):
         scanner = Scanner(REGEX_EVENT)
         result = scanner.scan_log_file(LOG_FILE)
-        self.assertEqual(len(result),2,"Scanner detected incorrect amount of log lines!");
+        self.assertEqual(len(result),3,"Scanner detected incorrect amount of log lines!");
         self.assertEqual(result[1],self.lines[0],"Scanner line output mismatch!")
+
+if __name__ == "__main__":
+    unittest.main()
