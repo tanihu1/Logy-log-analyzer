@@ -8,11 +8,12 @@ Supports `.log` files and `.log.gz` compressed files.
 
 **Example**:
 
-From inside the directory, run:
-
 ```sh
 python LogAnalyzer.py -l logs -e event_configs/events_sample.txt
 ```
+
+Will output filtered content of logs located in the folder `logs` based on events configured
+in the file `event_configs/events_sample.txt`.
 
 To see Logy's input options, simply run:
 

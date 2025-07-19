@@ -45,7 +45,7 @@ class Printer:
                 print("Please add at least one valid event and try again.")
 
     def print_no_config_file(self):
-        print("No readable events file could be detected at the defined path.")
+        print("No valid config file could be find at the specified location.")
         print("Please double-check file location and try again")
 
     def print_no_log_file(self):
